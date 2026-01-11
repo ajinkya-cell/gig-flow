@@ -1,0 +1,13 @@
+// src/server.ts
+import http from "http";
+import dotenv from "dotenv";
+import app from "./app.js";
+import connectDB from "./config/db.js";
+import { initSocket } from "./config/socket.js";
+dotenv.config();
+connectDB();
+const server = http.createServer(app);
+initSocket(server);
+server.listen(process.env.PORT, () => {
+    console.log(`Server running on port ${process.env.PORT}`);
+});
