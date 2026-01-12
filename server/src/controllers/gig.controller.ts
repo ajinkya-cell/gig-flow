@@ -11,6 +11,17 @@ export const getGigs = async (req: Request, res: Response) => {
   res.json(gigs);
 };
 
+export const getGigById = async (req: Request, res: Response) => {
+  const gig = await Gig.findById(req.params.id);
+
+  if (!gig) {
+    return res.status(404).json({ message: "Gig not found" });
+  }
+
+  res.json(gig);
+};
+
+
 export const createGig = async (
   req: Request & { user?: { id: string } },
   res: Response

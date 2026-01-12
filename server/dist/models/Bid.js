@@ -6,7 +6,7 @@ const BidSchema = new Schema({
     price: Number,
     status: {
         type: String,
-        enum: ["pending ", "hired", "rejected"],
+        enum: ["pending", "hired", "rejected"],
         default: "pending"
     }
 }, {

@@ -1,19 +1,27 @@
-// src/App.tsx
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+"use client"
+import { useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
+
+import AppRoutes from "./routes/AppRoutes";
+import { useAuth } from "./context/AuthContext";
+import { useSocket } from "./hooks/useSocket";
 import Navbar from "./components/Navbar";
-import Gigs from "./pages/Gigs";
-import Login from "./pages/Login";
-import GigDetails from "./pages/GigDetails";
 
 export default function App() {
+  const location = useLocation();
+  const { user } = useAuth();
+
+  // 🔌 Initialize socket only when user is logged in
+  useSocket(user?._id);
+
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Gigs />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/gigs/:id" element={<GigDetails />} />
-      </Routes>
-    </BrowserRouter>
+    <AnimatePresence mode="wait">
+      {/* key is IMPORTANT for page transition animations */}
+      <div key={location.pathname} className="min-h-screen text-black bg-gray-50">
+      <Navbar/>
+        <AppRoutes />
+      </div>
+    </AnimatePresence>
   );
 }

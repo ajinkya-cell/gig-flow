@@ -1,30 +1,22 @@
-// src/pages/Login.tsx
+// src/pages/Register.tsx
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-export default function Login() {
-  const { login } = useAuth();
+export default function Register() {
+  const { register } = useAuth();
   const navigate = useNavigate();
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-
-  console.log("login started");
-
-  try {
-    await login(email, password);
-    console.log("login success");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await register(name, email, password);
     navigate("/");
-  } catch (err) {
-    console.error("login failed", err);
-    alert("Login failed. Check console.");
-  }
-};
+  };
 
   return (
     <motion.div
@@ -32,11 +24,15 @@ export default function Login() {
       animate={{ opacity: 1, y: 0 }}
       className="min-h-screen flex items-center justify-center"
     >
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md bg-white p-6 rounded-xl shadow"
-      >
-        <h1 className="text-2xl font-bold mb-4">Login</h1>
+      <form className="w-full max-w-md bg-white p-6 rounded-xl shadow" onSubmit={handleSubmit}>
+        <h1 className="text-2xl font-bold mb-4">Create Account</h1>
+
+        <input
+          className="w-full border p-2 mb-3 rounded"
+          placeholder="Name"
+          required
+          onChange={(e) => setName(e.target.value)}
+        />
 
         <input
           className="w-full border p-2 mb-3 rounded"
@@ -55,13 +51,13 @@ export default function Login() {
         />
 
         <button className="w-full bg-black text-white py-2 rounded">
-          Login
+          Register
         </button>
 
         <p className="text-sm mt-4 text-center">
-          No account?{" "}
-          <Link to="/register" className="text-blue-600">
-            Register
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-600">
+            Login
           </Link>
         </p>
       </form>

@@ -1,28 +1,29 @@
+// src/controllers/auth.controller.ts
 import { Request, Response } from "express";
+import bcrypt from "bcryptjs";
 import User from "../models/User.js";
-import bcrypt from "bcryptjs"
-import { generateToken } from "../utils/generateToken.js";
+import { generateToken } from "../utils/generateToken.js"; 
 
-export const register = async(req:Request , res:Response)=>{
-    const {name , email ,password} =req.body;
+export const register = async (req: Request, res: Response) => {
+  const { name, email, password } = req.body;
 
-    if(await User.findOne({email}))
-    {
-        return res.status(400).json({message :"User exists"})}
-       
-    const hashed = await bcrypt.hash(password , 10)    ;
-    const user = await User.create({name , email , password:hashed})
+  if (await User.findOne({ email }))
+    return res.status(400).json({ message: "User exists" });
 
-    generateToken(res , user._id.toString())
-    res.status(201).json(user);
-}
+  const hashed = await bcrypt.hash(password, 10);
+  const user = await User.create({ name, email, password: hashed });
 
-export const login = async (req:Request , res : Response)=>{
-    const {email , password} = req.body;
-    const user = await User.findOne({email});
-    if(!user || !(await bcrypt.compare(password , user.password))){
-        return res.status(400).json({
-            message : "Invalid credentials"
-        })
-    }
-}
+  generateToken(res, user.id);
+  res.json(user);
+};
+
+export const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user || !(await bcrypt.compare(password, user.password)))
+    return res.status(400).json({ message: "Invalid credentials" });
+
+  generateToken(res, user.id);
+  res.json(user);
+};
